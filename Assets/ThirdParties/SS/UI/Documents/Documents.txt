@@ -1,0 +1,3 @@
+- Documents: https://github.com/AnhPham/Simple-Screen-Manager-for-Unity-aka-SS
+- Email: anhpt.csit@gmail.com, anhpt@zenga.com.vn
+- Website: https://zenga.com.vn

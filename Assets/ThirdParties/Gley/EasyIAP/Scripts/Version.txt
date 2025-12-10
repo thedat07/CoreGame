@@ -1,0 +1,5 @@
+{
+    "folderName": "EasyIAP",
+    "longVersion": "2.0.8",
+    "shortVersion": 208
+}
