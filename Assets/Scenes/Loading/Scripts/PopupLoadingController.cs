@@ -40,13 +40,11 @@ public class PopupLoadingController : Controller, ILoading
         }
         else
         {
-            m_Anim.Play("LoadingShow");
         }
     }
 
     public void HideLoading()
     {
-        m_Anim.Play("LoadingHide");
         UnityTimer.Timer.Register(0.35f, () =>
         {
             gameObject.SetActive(false);
