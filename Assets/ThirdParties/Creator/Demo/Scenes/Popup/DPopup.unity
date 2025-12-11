@@ -519,9 +519,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Controller: {fileID: 1387960}
   shield: {fileID: 0}
-  m_AnimationType: 2
-  m_ShowEaseType: 27
-  m_HideEaseType: 26
+  m_AnimationType: 1
+  m_ShowEaseType: 1
+  m_HideEaseType: 1
 --- !u!225 &1284827506
 CanvasGroup:
   m_ObjectHideFlags: 0

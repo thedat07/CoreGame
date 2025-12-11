@@ -29,7 +29,7 @@ namespace Creator
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
 
-            SceneAnimationDuration = 0.25f;
+            SceneAnimationDuration = 0.1f;
 
             Object = ((GameObject)GameObject.Instantiate(Resources.Load("ManagerObject"))).GetComponent<ManagerObject>();
 
