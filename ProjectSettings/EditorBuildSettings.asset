@@ -6,11 +6,23 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Project/Screens/MainGameCore/MainGameCore.unity
-    guid: 7867095ca2d047d44aac2f19b7398e37
+    path: Assets/Scenes/MainGame/MainGameCore.unity
+    guid: c8e0bd2535319254b827f06a3c9495a5
   - enabled: 1
-    path: Assets/Project/Screens/GamePlay/GamePlay.unity
-    guid: 85c2671c8858c754e913afcd3445b85c
+    path: Assets/ThirdParties/Creator/Demo/Scenes/Game/DGame.unity
+    guid: 9761bb7ca9fbb42889fd55b2d3fc28d1
+  - enabled: 1
+    path: Assets/ThirdParties/Creator/Demo/Scenes/Popup/DPopup.unity
+    guid: 46411c47c24404545aea993c486be51b
+  - enabled: 1
+    path: Assets/ThirdParties/Creator/Demo/Scenes/Select/DSelect.unity
+    guid: e63256b2e0e154a8ba28cf67546532ca
+  - enabled: 1
+    path: Assets/ThirdParties/Creator/Demo/Scenes/Top/DTop.unity
+    guid: 014247655ec5f4ebdbe375f00e5821f4
+  - enabled: 1
+    path: Assets/Scenes/Loading/PopupLoading.unity
+    guid: a02b6d5a43c3f6b4ba6ca352f810f764
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 65a89630f80f044ae9999980a796f720, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

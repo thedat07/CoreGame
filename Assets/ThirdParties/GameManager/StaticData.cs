@@ -3,6 +3,8 @@ using UnityUtilities;
 
 public static class StaticData
 {
+    public static Vector2 ScreenGame = new Vector2(1080, 2340);
+    
     public static float DelayTimeDefault = 0.2f;
 
     private const string Key = "player_id";
