@@ -135,7 +135,7 @@ public class ShopModelView : MonoBehaviour
                 UpdateIapCount();
 
                 double price = Gley.EasyIAP.API.GetPrice(shopProduct);
-                string currency = Gley.EasyIAP.API.GetIsoCurrencyCode(shopProduct); 
+                string currency = Gley.EasyIAP.API.GetIsoCurrencyCode(shopProduct);
             }
             else
             {
@@ -229,37 +229,38 @@ public class ShopModelView : MonoBehaviour
 
     private Tween m_AutoOffTween;
 
-    private Tween m_DeactivateTween;
-
     void SetActiveShield(bool active)
     {
+        KillTweens();
+
         if (active)
         {
-            m_ShieldShop.gameObject.SetActive(true);
-
-            m_AutoOffTween?.Kill();
-            m_DeactivateTween?.Kill();
-
-
-            m_AutoOffTween = DOVirtual.DelayedCall(1f, () =>
-            {
-                if (m_ShieldShop.gameObject.activeSelf)
-                {
-                    SetActiveShield(false);
-                }
-            }).SetLink(gameObject);
+            ActivateShield();
         }
         else
         {
-            m_AutoOffTween?.Kill();
-            m_AutoOffTween = null;
-
-            m_DeactivateTween?.Kill();
-            m_DeactivateTween = DOVirtual.DelayedCall(StaticData.DelayTimeDefault, () =>
-            {
-                m_ShieldShop.gameObject.SetActive(false);
-            }).SetLink(gameObject);
+            DeactivateShieldWithDelay();
         }
+    }
+
+    void ActivateShield()
+    {
+        m_ShieldShop.SetActive(true);
+
+        m_AutoOffTween = DOVirtual.DelayedCall(1f, DeactivateShieldWithDelay)
+            .OnKill(DeactivateShieldWithDelay)
+            .SetLink(m_ShieldShop, LinkBehaviour.KillOnDisable);
+    }
+
+    void DeactivateShieldWithDelay()
+    {
+        m_ShieldShop.SetActive(false);
+    }
+
+    void KillTweens()
+    {
+        m_AutoOffTween?.Kill();
+        m_AutoOffTween = null;
     }
 
     public void UpdateIapCount()

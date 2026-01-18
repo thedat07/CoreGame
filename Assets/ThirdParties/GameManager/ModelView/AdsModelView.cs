@@ -53,7 +53,7 @@ public class AdsModelView : MonoBehaviour
 
     public void ShowMediationDebugger()
     {
-      
+
     }
 
     public int UpdateAdShowedCount()
@@ -163,36 +163,35 @@ public class AdsModelView : MonoBehaviour
 
     private Tween m_AutoOffTween;
 
-    private Tween m_DeactivateTween;
-
     void SetActiveShield(bool active)
     {
+        KillTweens();
+
         if (active)
         {
-            m_ShieldAds.gameObject.SetActive(true);
-
-            m_AutoOffTween?.Kill();
-            m_DeactivateTween?.Kill();
-
-
-            m_AutoOffTween = DOVirtual.DelayedCall(1f, () =>
-            {
-                if (m_ShieldAds.gameObject.activeSelf)
-                {
-                    SetActiveShield(false);
-                }
-            }).SetLink(gameObject);
+            ActivateShield();
         }
         else
         {
-            m_AutoOffTween?.Kill();
-            m_AutoOffTween = null;
-
-            m_DeactivateTween?.Kill();
-            m_DeactivateTween = DOVirtual.DelayedCall(StaticData.DelayTimeDefault, () =>
-            {
-                m_ShieldAds.gameObject.SetActive(false);
-            }).SetLink(gameObject);
+            DeactivateShieldWithDelay();
         }
+    }
+
+    void ActivateShield()
+    {
+        m_ShieldAds.SetActive(true);
+        m_AutoOffTween = DOVirtual.DelayedCall(0.25f, DeactivateShieldWithDelay).OnKill(DeactivateShieldWithDelay).SetLink(m_ShieldAds, LinkBehaviour.KillOnDisable);
+    }
+
+    void DeactivateShieldWithDelay()
+    {
+        if (m_ShieldAds.activeSelf)
+            m_ShieldAds.SetActive(false);
+    }
+
+    void KillTweens()
+    {
+        m_AutoOffTween?.Kill();
+        m_AutoOffTween = null;
     }
 }
