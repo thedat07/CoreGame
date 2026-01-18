@@ -45,17 +45,16 @@ namespace Creator
 
         public static void PopScene()
         {
-            if (m_ControllerStack.Count > 1)
+            if (m_ControllerStack.Count <= 1)
             {
-                ActivatePreviousController(true);
-                HideController(true);
+                return;
             }
 
-            if (m_ControllerStack.Count > 0)
-            {
-                Object.ShieldOn();
-                m_ControllerStack.Peek().Hide();
-            }
+            ActivatePreviousController(true);
+            HideController(true);
+
+            Object.ShieldOn();
+            m_ControllerStack.Peek().Hide();
         }
 
         public static Controller GetRunningScene()
@@ -75,15 +74,61 @@ namespace Creator
 
         public static void PopToRootScene()
         {
-            if (m_ControllerStack.Count > 1)
+            if (m_ControllerStack == null || m_ControllerStack.Count == 0)
+                return;
+
+            while (m_ControllerStack.Count > 1)
             {
-                for (int i = 1; i < m_ControllerStack.Count; i++)
-                {
-                    RemovePreviousController(m_ControllerStack.Peek());
-                }
+                PopTopControllerImmediate();
             }
 
-            PopScene();
+            var rootController = m_ControllerStack.Peek();
+            if (rootController == null)
+                return;
+
+            if (rootController.Animation
+                .TryGetComponent<CanvasGroup>(out var canvasGroup))
+            {
+                canvasGroup.blocksRaycasts = true;
+            }
+        }
+
+
+        protected static void PopTopControllerImmediate()
+        {
+            if (m_ControllerStack.Count == 0)
+                return;
+
+            var controller = m_ControllerStack.Pop();
+
+            RemovePendingDataForScene(controller.SceneName());
+
+            SceneManager.UnloadSceneAsync(controller.Data.scene);
+
+            if (m_ControllerStack.Count > 0)
+            {
+                m_ControllerStack.Peek().OnReFocus();
+            }
+        }
+
+        static void RemovePendingDataForScene(string sceneName)
+        {
+            if (m_DataQueue.Count == 0)
+                return;
+
+            var temp = new Queue<Data>();
+
+            while (m_DataQueue.Count > 0)
+            {
+                var data = m_DataQueue.Dequeue();
+
+                if (data.sceneName == sceneName)
+                    continue;
+
+                temp.Enqueue(data);
+            }
+
+            m_DataQueue = temp;
         }
 
         public static Stack<Controller> GetSceneStack()
@@ -168,25 +213,15 @@ namespace Creator
 
         protected static void RemovePreviousController(Controller controller)
         {
-            Stack<Controller> temp = new Stack<Controller>();
+            if (m_ControllerStack.Count == 0)
+                return;
 
-            while (m_ControllerStack.Count > 0)
-            {
-                var top = m_ControllerStack.Pop();
-                temp.Push(top);
 
-                if (top == controller && m_ControllerStack.Count > 0)
-                {
-                    var previousController = m_ControllerStack.Pop();
-                    Unload(previousController);
-                    break;
-                }
-            }
+            if (m_ControllerStack.Peek() != controller)
+                return;
 
-            while (temp.Count > 0)
-            {
-                m_ControllerStack.Push(temp.Pop());
-            }
+            var removed = m_ControllerStack.Pop();
+            Unload(removed);
         }
 
         protected static Controller GetController(Scene scene)

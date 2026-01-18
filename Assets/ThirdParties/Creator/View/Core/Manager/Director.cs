@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using System.Collections;
+using YNL.Utilities.Extensions;
 using UnityTimer;
 
 namespace Creator
@@ -9,6 +11,7 @@ namespace Creator
     {
         protected static string m_LoadingSceneName;
         protected static Controller m_LoadingController;
+        private static bool initialized;
 
         public static string LoadingSceneName
         {
@@ -27,12 +30,26 @@ namespace Creator
 
         static Director()
         {
+            // CHỈ gán dữ liệu nhẹ, KHÔNG Unity API
+            SceneAnimationDuration = 0.25f;
+
+            Creator.Director.LoadingSceneName = DLoading.SCENE_NAME;
+        }
+
+        public static void Init()
+        {
+            if (initialized)
+                return;
+
+            initialized = true;
+
             SceneManager.sceneLoaded += OnSceneLoaded;
 
-            SceneAnimationDuration = 0.1f;
+            var go = GameObject.Instantiate(
+                Resources.Load<GameObject>("ManagerObject")
+            );
 
-            Object = ((GameObject)GameObject.Instantiate(Resources.Load("ManagerObject"))).GetComponent<ManagerObject>();
-
+            Object = go.GetComponent<ManagerObject>();
             Object.gameObject.name = "ManagerObject";
         }
 
@@ -81,21 +98,21 @@ namespace Creator
         public static void OnHidden(Controller controller)
         {
             controller.OnHidden();
-            if (controller.Data.onHidden != null)
-            {
-                controller.Data.onHidden();
-            }
+            controller.Data?.onHidden?.Invoke();
 
-            Unload();
+            if (m_ControllerStack.Count > 1)
+            {
+                Unload();
+            }
 
             if (m_ControllerStack.Count > 0)
             {
-                var currentController = m_ControllerStack.Peek();
-                currentController.OnReFocus();
+                m_ControllerStack.Peek().OnReFocus();
             }
 
             Object.ShieldOff();
         }
+
 
         public static void OnFadedIn()
         {
@@ -177,6 +194,8 @@ namespace Creator
             // Animation
             if (m_ControllerStack.Count == 1)
             {
+                MCamera.SetupBaseAndOverlayCameras(controller.Camera, Object.UICamera);
+
                 // Main Scene
                 m_MainController = controller;
                 if (string.IsNullOrEmpty(m_MainSceneName))

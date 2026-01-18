@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Gley.MobileAds;
-using UnityTimer;
 using DG.Tweening;
+using UnityTimer;
 
 public class AdTimer
 {
